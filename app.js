@@ -1,6 +1,6 @@
 import express from 'express';
 
-import {PORT} from './config/env.js';
+import { PORT } from './config/env.js';
 import cookieParser from 'cookie-parser';
 import arcjetMiddleware from './middlewares/arcjet.middleware.js';
 import errorMiddleware from './middlewares/error.middleware.js';
@@ -11,6 +11,8 @@ import subscriptionRouter from './routes/subscription.routes.js';
 import modelRouter from './routes/model.routes.js';
 import paymentRouter from './routes/payment.routes.js';
 
+import cors from 'cors'
+
 
 
 
@@ -19,9 +21,19 @@ import paymentRouter from './routes/payment.routes.js';
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+
+app.use(cors({
+    origin: ['http://localhost:3000', 'https://mvp-spatia-scape.vercel.app'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(arcjetMiddleware)
+
+
+
 
 
 app.use('/api/v1/auth', authRouter);
@@ -44,4 +56,4 @@ app.listen(PORT, async () => {
 })
 
 
-export default app;
+export default app; 

@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
 import bcrypt from "bcryptjs"
+import validator from 'validator';
 import jwt from "jsonwebtoken"
 import User from "../models/user.model.js"
 import { JWT_EXPIRES_IN, JWT_SECRET } from "../config/env.js";
@@ -12,11 +13,15 @@ export const signUp = async (req, res, next) => {
         // Logic to create a new user 
         const { name, email, password } = req.body;
 
+        if (!validator.isEmail(email)) {
+            return res.status(400).json({ error: 'Invalid email address' });
+        }
+
         // Check if the user already exists
         const existingUser = await User.findOne({ email });
 
         if (existingUser) {
-            const Error = new Error('User already exists');
+            const error = new Error('User already exists');
             error.statusCode = 409;
             throw error;
         }
